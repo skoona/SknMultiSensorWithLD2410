@@ -1,0 +1,9 @@
+# PlatformIO
+.pio
+.pioenvs
+.piolibdeps
+.vscode
+data/homie/config.json
+*.log
+test/*
+
