@@ -93,7 +93,82 @@ sknSensors/HomeOffice/$stats/uptime 4
 sknSensors/HomeOffice/$stats/freeheap 220336
 
 sknSensors/HomeOffice/Occupancy/system/set 1
-sknSensors/HomeOffice/Occupancy/system {"HelpResponse":{"success":true,"message":"Device online","data":{"Commands":[{"id":1,"command":"help","description":"this text"},{"id":2,"command":"streamstart","description":"start sending udp data to SerialStudio."},{"id":3,"command":"streamstop","description":"stop sending to SerialStream."},{"id":4,"command":"read","description":"read current values from the sensor"},{"id":5,"command":"readconfig","description":"read the configuration from the sensor"},{"id":6,"command":"setmaxvalues","param1":"<motion gate> (2-8)","param2":"<stationary gate> (2-8)","param3":"<inactivitytimer> (0-65535 seconds)","description":"sets distance sensitivity and idle hold timer"},{"id":7,"command":"setsensitivity","param1":"<gate> (2-8|255)","param2":"<motionsensitivity> (0-100)","param3":"<stationarysensitivity> (0-100)","description":"set sensitivity for individual motion and stationary gate pairs, or all if gate=255"},{"id":8,"command":"restart","description":"restart the sensor"},{"id":9,"command":"readversion","description":"read firmware version"},{"id":10,"command":"factoryreset","description":"factory reset the sensor"},{"id":11,"command":"deviceinfo","description":"LD2410 device info"},{"id":12,"command":"reboot","description":"reboot hosting micro-controller"}]}}}
+sknSensors/HomeOffice/Occupancy/system {
+	"HelpResponse": {
+		"success": true,
+		"message": "Device online",
+		"data": {
+			"Commands": [
+				{
+					"id": 1,
+					"command": "help",
+					"description": "this text"
+				},
+				{
+					"id": 2,
+					"command": "streamstart",
+					"description": "start sending udp data to SerialStudio."
+				},
+				{
+					"id": 3,
+					"command": "streamstop",
+					"description": "stop sending to SerialStream."
+				},
+				{
+					"id": 4,
+					"command": "read",
+					"description": "read current values from the sensor"
+				},
+				{
+					"id": 5,
+					"command": "readconfig",
+					"description": "read the configuration from the sensor"
+				},
+				{
+					"id": 6,
+					"command": "setmaxvalues",
+					"param1": "<motion gate> (2-8)",
+					"param2": "<stationary gate> (2-8)",
+					"param3": "<inactivitytimer> (0-65535 seconds)",
+					"description": "sets distance sensitivity and idle hold timer"
+				},
+				{
+					"id": 7,
+					"command": "setsensitivity",
+					"param1": "<gate> (2-8|255)",
+					"param2": "<motionsensitivity> (0-100)",
+					"param3": "<stationarysensitivity> (0-100)",
+					"description": "set sensitivity for individual motion and stationary gate pairs, or all if gate=255"
+				},
+				{
+					"id": 8,
+					"command": "restart",
+					"description": "restart the sensor"
+				},
+				{
+					"id": 9,
+					"command": "readversion",
+					"description": "read firmware version"
+				},
+				{
+					"id": 10,
+					"command": "factoryreset",
+					"description": "factory reset the sensor"
+				},
+				{
+					"id": 11,
+					"command": "deviceinfo",
+					"description": "LD2410 device info"
+				},
+				{
+					"id": 12,
+					"command": "reboot",
+					"description": "reboot hosting micro-controller"
+				}
+			]
+		}
+	}
+}
 
 sknSensors/HomeOffice/Occupancy/system/set 2
 sknSensors/HomeOffice/Occupancy/system {"StreamStartResponse":{"success":true,"message":"Device online","data":{}}}
