@@ -114,9 +114,9 @@ sknSensors/HomeOffice/Occupancy/system/set 11
 sknSensors/HomeOffice/Occupancy/system {"DeviceInfoResponse":{"data":{"isEngineeringMode":true,"cmdProtocolVersion":1,"cmdCommunicationBufferSize":64,"cmdFirmwareVersion":"v1.7.22091516\n","engRetainDataValue":772},"success":true,"message":"Device online"}}
 
 sknSensors/HomeOffice/Occupancy/deviceStatus {"TargetReport":{"unitOfMeasure":"feet","triggeredBy":"Moving","detectionDistance":"0.0","movingTargetDistance":"2.7","movingTargetEnergy":100,"stationaryTargetDistance":"0.0","stationaryTargetEnergy":0}}
+sknSensors/HomeOffice/Occupancy/deviceStatus {"EngineeringTargetReport":{"unitOfMeasure":"feet","triggeredBy":"Stationary","detectionDistance":"8.9","movingTargetDistance":"2.3","movingTargetEnergy":0,"stationaryTargetDistance":"9.7","stationaryTargetEnergy":9,"maxMovingDistanceGate":8,"maxStationaryDistanceGate":8,"gates":{"0":{"movingDistanceGateEnergy":17,"movingSensitivity":50,"StationaryDistanceGateEnergy":0,"StationarySensitivity":0},"1":{"movingDistanceGateEnergy":14,"movingSensitivity":50,"StationaryDistanceGateEnergy":0,"StationarySensitivity":0},"2":{"movingDistanceGateEnergy":1,"movingSensitivity":40,"StationaryDistanceGateEnergy":4,"StationarySensitivity":40},"3":{"movingDistanceGateEnergy":6,"movingSensitivity":30,"StationaryDistanceGateEnergy":5,"StationarySensitivity":40},"4":{"movingDistanceGateEnergy":4,"movingSensitivity":20,"StationaryDistanceGateEnergy":8,"StationarySensitivity":30},"5":{"movingDistanceGateEnergy":5,"movingSensitivity":15,"StationaryDistanceGateEnergy":8,"StationarySensitivity":30},"6":{"movingDistanceGateEnergy":2,"movingSensitivity":15,"StationaryDistanceGateEnergy":9}}}}
+
 sknSensors/HomeOffice/Occupancy/motion ON
 sknSensors/HomeOffice/Occupancy/occupancy OFF
-
-
 
 ```
