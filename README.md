@@ -184,6 +184,7 @@ sknSensors/HomeOffice/Occupancy/system {"ReadConfigResponse":{"success":true,"me
 
 sknSensors/HomeOffice/Occupancy/system/set 9
 sknSensors/HomeOffice/Occupancy/system {"ReadVersionResponse":{"data":{},"success":false,"message":"command execution failed"}}
+sknSensors/HomeOffice/Occupancy/system {"ReadVersionResponse":{"data":{"cmdFirmwareVersion":"v1.7.22091516\n"},"success":true,"message":"Device online"}}
 
 sknSensors/HomeOffice/Occupancy/system/set 11
 sknSensors/HomeOffice/Occupancy/system {"DeviceInfoResponse":{"data":{"isEngineeringMode":true,"cmdProtocolVersion":1,"cmdCommunicationBufferSize":64,"cmdFirmwareVersion":"v1.7.22091516\n","engRetainDataValue":772},"success":true,"message":"Device online"}}
