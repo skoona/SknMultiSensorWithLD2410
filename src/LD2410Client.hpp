@@ -67,8 +67,8 @@ private:
 
   const char *cPropertyCommand = "system";
   const char *cPropertyCommandName = "Command Handler";
-  const char *cPropertyCommandDataType = "string";
-  const char *cPropertyCommandFormat = "";
+  const char *cPropertyCommandDataType = "enum";
+  const char *cPropertyCommandFormat = "1:12,help,streamStart,streamStop,read,readConfig,setMaxValues,setSensitivity,restart,readVersion,factoryReset,deviceInfo,rebootNode";
 
   const char *cPropertyStatus = "deviceStatus";
   const char *cPropertyStatusName = "Device Status";

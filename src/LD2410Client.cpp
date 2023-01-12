@@ -173,12 +173,12 @@ DynamicJsonDocument LD2410Client::availableCommands() {
 
   JsonObject item2 = jCmd.createNestedObject();
   item2["id"] = 2;
-  item2["command"]= "streamstart";
+  item2["command"]= "streamStart";
   item2["description"] = "start sending udp data to SerialStudio.";
 
   JsonObject item3 = jCmd.createNestedObject();
   item3["id"] = 3;
-  item3["command"]= "streamstop";
+  item3["command"]= "streamStop";
   item3["description"] = "stop sending to SerialStream.";
 
   JsonObject item4 = jCmd.createNestedObject();
@@ -188,12 +188,12 @@ DynamicJsonDocument LD2410Client::availableCommands() {
 
   JsonObject item5 = jCmd.createNestedObject();
   item5["id"] = 5;
-  item5["command"]= "readconfig";
+  item5["command"]= "readConfig";
   item5["description"] = "read the configuration from the sensor";
 
   JsonObject item6 = jCmd.createNestedObject();
   item6["id"] = 6;
-  item6["command"]= "setmaxvalues";
+  item6["command"]= "setMaxValues";
   item6["param1"]="<motion gate> (2-8)";
   item6["param2"]="<stationary gate> (2-8)";
   item6["param3"]="<inactivitytimer> (0-65535 seconds)";
@@ -201,7 +201,7 @@ DynamicJsonDocument LD2410Client::availableCommands() {
 
   JsonObject item7 = jCmd.createNestedObject();
   item7["id"] = 7;
-  item7["command"]= "setsensitivity";
+  item7["command"]= "setSensitivity";
   item7["param1"]="<gate> (2-8|255)";
   item7["param2"]="<motionsensitivity> (0-100)";
   item7["param3"]="<stationarysensitivity> (0-100)";
@@ -214,22 +214,22 @@ DynamicJsonDocument LD2410Client::availableCommands() {
 
   JsonObject item9 = jCmd.createNestedObject();
   item9["id"] = 9;
-  item9["command"]= "readversion";
+  item9["command"]= "readVersion";
   item9["description"] = "read firmware version";
 
   JsonObject item10 = jCmd.createNestedObject();
   item10["id"] = 10;
-  item10["command"]= "factoryreset";
+  item10["command"]= "factoryReset";
   item10["description"] = "factory reset the sensor";
 
   JsonObject item11 = jCmd.createNestedObject();
   item11["id"] = 11;
-  item11["command"]= "deviceinfo";
+  item11["command"]= "deviceInfo";
   item11["description"] = "LD2410 device info";
 
   JsonObject item12 = jCmd.createNestedObject();
   item12["id"] = 12;
-  item12["command"]= "reboot";
+  item12["command"]= "rebootNode";
   item12["description"] = "reboot hosting micro-controller";
 
   return doc;
@@ -250,6 +250,7 @@ DynamicJsonDocument LD2410Client::commandProcessor(String &cmdStr) {
   DynamicJsonDocument jCMD(1024);
   int iCmd = cmdStr.toInt();
   cmdStr.trim();
+  cmdStr.toLowerCase();
 
   if (cmdStr.equals("help") || iCmd == 1) {
     JsonObject response = jCMD.createNestedObject("HelpResponse");

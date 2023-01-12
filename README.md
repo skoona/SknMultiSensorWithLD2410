@@ -106,12 +106,12 @@ sknSensors/HomeOffice/Occupancy/system {
 				},
 				{
 					"id": 2,
-					"command": "streamstart",
+					"command": "streamStart",
 					"description": "start sending udp data to SerialStudio."
 				},
 				{
 					"id": 3,
-					"command": "streamstop",
+					"command": "streamStop",
 					"description": "stop sending to SerialStream."
 				},
 				{
@@ -121,12 +121,12 @@ sknSensors/HomeOffice/Occupancy/system {
 				},
 				{
 					"id": 5,
-					"command": "readconfig",
+					"command": "readConfig",
 					"description": "read the configuration from the sensor"
 				},
 				{
 					"id": 6,
-					"command": "setmaxvalues",
+					"command": "setMaxValues",
 					"param1": "<motion gate> (2-8)",
 					"param2": "<stationary gate> (2-8)",
 					"param3": "<inactivitytimer> (0-65535 seconds)",
@@ -134,7 +134,7 @@ sknSensors/HomeOffice/Occupancy/system {
 				},
 				{
 					"id": 7,
-					"command": "setsensitivity",
+					"command": "setSensitivity",
 					"param1": "<gate> (2-8|255)",
 					"param2": "<motionsensitivity> (0-100)",
 					"param3": "<stationarysensitivity> (0-100)",
@@ -147,22 +147,22 @@ sknSensors/HomeOffice/Occupancy/system {
 				},
 				{
 					"id": 9,
-					"command": "readversion",
+					"command": "readVersion",
 					"description": "read firmware version"
 				},
 				{
 					"id": 10,
-					"command": "factoryreset",
+					"command": "factoryReset",
 					"description": "factory reset the sensor"
 				},
 				{
 					"id": 11,
-					"command": "deviceinfo",
+					"command": "deviceInfo",
 					"description": "LD2410 device info"
 				},
 				{
 					"id": 12,
-					"command": "reboot",
+					"command": "rebootNode",
 					"description": "reboot hosting micro-controller"
 				}
 			]

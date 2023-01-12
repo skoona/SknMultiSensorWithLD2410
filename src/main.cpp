@@ -26,7 +26,7 @@ extern "C"
  * Note: HomieNode(...range,lower,upper) manages this array suffix change; i.e no more name fixups
 */
 #define SKN_MOD_NAME "MultiSensor"
-#define SKN_MOD_VERSION "3.1.0"
+#define SKN_MOD_VERSION "3.1.2"
 #define SKN_MOD_BRAND "SknSensors"
 
 #define SKN_TNODE_TITLE "Temperature and Humidity Sensor"
