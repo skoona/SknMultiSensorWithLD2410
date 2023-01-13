@@ -560,7 +560,7 @@ DynamicJsonDocument LD2410Client::processEngineeringReportData() {
 
   JsonObject jGates = item.createNestedObject("gates");
 
-  for (int x = 0; x < radar.cfgMaxGate(); ++x) {
+  for (int x = 0; x < radar.cfgMaxGate(); x++) {
     JsonObject gate = jGates.createNestedObject(String(x));    
     gate["movingDistanceGateEnergy"]     = radar.engMovingDistanceGateEnergy(x);
     gate["movingSensitivity"]            = radar.cfgMovingGateSensitivity(x);
