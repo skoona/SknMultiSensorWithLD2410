@@ -4,6 +4,7 @@
  */
 #include "LD2410Client.hpp"
 
+
 LD2410Client::LD2410Client(const char *id, const char *name, const char *nType, const uint8_t rxPin, const uint8_t txPin, const uint8_t ioPin, const bool enableReporting)
     : HomieNode(id, name, nType, false, 0U, 0U),
     _rxPin(rxPin),
@@ -13,6 +14,8 @@ LD2410Client::LD2410Client(const char *id, const char *name, const char *nType, 
 {
   // Start up the library
   pinMode(_ioPin, INPUT);
+  // get configured baud rate
+  loadBaudRate();
 }
 
 /**
@@ -51,20 +54,90 @@ void LD2410Client::onReadyToOperate()
 }
 
 /**
+ * @brief Load configured Serial Baud Rate
+ * 
+ * @return unsigned long 
+ */
+unsigned long LD2410Client::loadBaudRate() {
+  prefs.begin("ld2410", false);
+  _savedBaudRate = prefs.getULong("baud", 256000);
+  prefs.end();
+  return _savedBaudRate;
+}
+
+/**
+ * @brief Save newly configured baud rate
+ * 
+ * @param baud 
+ * @return true 
+ * @return false 
+ */
+unsigned long LD2410Client::saveBaudRate(uint8_t baudIndex) {
+  _savedBaudRate = serialSpeed(baudIndex);
+  prefs.begin("ld2410", false);
+  prefs.getULong("baud", _savedBaudRate);
+  prefs.end();
+  return _savedBaudRate;
+}
+
+/**
+ * @brief Initialze LD2410 Serial port
+ * 
+ * @return true 
+ * @return false 
+ */
+bool LD2410Client::initSensor(bool debug) {
+  bool bRc = true;
+  
+  // enable debug output to console
+  if(debug) {
+    radar.debug(Serial);  
+  }
+
+  // Start Sensor
+  Serial2.begin(_savedBaudRate, SERIAL_8N1, _rxPin, _txPin); // UART for monitoring the radar rx, tx  
+  delay(200);
+  if (radar.begin(Serial2)) {
+    Homie.getLogger() << cCaption 
+                      << " Initialized..." 
+                      << Serial2.baudRate()
+                      << endl;
+  } else {
+    Serial2.begin(256000, SERIAL_8N1, _rxPin, _txPin); // UART for monitoring the radar rx, tx     
+    delay(200);
+    if (radar.begin(Serial2)) {
+      saveBaudRate(7);
+      Homie.getLogger() << cCaption 
+                        << " Initialized..." 
+                        << Serial2.baudRate()
+                        << endl;
+    } else { 
+      Serial2.end(true);
+      delay(200);
+      Serial2.begin(_savedBaudRate, SERIAL_8N1, _rxPin, _txPin); // UART for monitoring the radar rx, tx     
+      delay(200);
+      if(radar.begin(Serial2)) {
+        Homie.getLogger() << cCaption 
+                          << " Initialized..." 
+                          << Serial2.baudRate()
+                          << endl;
+      } else {
+        Homie.getLogger() << cCaption << " was not connected... "<< Serial2.baudRate() << endl;
+        bRc = false;                          
+      }
+    }
+  }
+  return bRc;
+}
+
+/**
  * Called by Homie when Homie.setup() is called; Once!
 */
 void LD2410Client::setup() {
   Homie.getLogger() << cCaption << endl;
 
   // start path to LD2410
-  // radar.debug(Serial);  // enable debug output to console
-  Serial2.begin(256000, SERIAL_8N1, _rxPin, _txPin); // UART for monitoring the radar rx, tx  
-
-  if (radar.begin(Serial2)) {
-    Homie.getLogger() << cCaption << " Initialized..." << endl;
-  } else {
-    Homie.getLogger() << cCaption << " was not connected" << endl;
-  }
+  initSensor(false);
 
   advertise(cPropertyMotion)
       .setName(cPropertyMotionName)
@@ -99,9 +172,8 @@ void LD2410Client::loop() {
   radar.ld2410_loop();
   
   // Module controls hold time, so all we need is to read the io pin
-  if ((_motion != digitalRead(_ioPin)) || ((timer - _lastBroadcast) > _broadcastInterval)) {
+  if (_motion != digitalRead(_ioPin)) {
         
-    _lastBroadcast = timer;
     _motion = digitalRead(_ioPin);
 
     // process target reporting data
@@ -234,10 +306,36 @@ DynamicJsonDocument LD2410Client::availableCommands() {
 
   return doc;
 }
-
-
 // clang-format on
 
+/**
+ * @brief LD2410 Baudrate index
+ * 
+ * @param choice 
+ * @return unsigned long 
+ */
+unsigned long LD2410Client::serialSpeed(uint8_t choice) {
+  switch(choice) {
+    case 1:
+      return 9600;
+    case 2:
+      return 19200;
+    case 3:
+      return 38400;
+    case 4:
+      return 57600;
+    case 5:
+      return 115200;
+    case 6:
+      return 230400;
+    case 7:
+      return 256000;
+    case 8:
+      return 460800;
+    default:
+      return 256000;
+  }
+}
 
 /*
  * JSON Command Processor
@@ -322,7 +420,7 @@ DynamicJsonDocument LD2410Client::commandProcessor(String &cmdStr) {
       item["cfgSensorIdleTimeInSeconds"] = radar.cfgSensorIdleTimeInSeconds();
       
       JsonObject cfg = item.createNestedObject("gateConfig");
-      for (uint8_t gate = 0; gate < radar.cfgMaxGate(); gate++) {
+      for (uint8_t gate = 0; gate <= radar.cfgMaxGate(); gate++) {
          JsonObject jEle = cfg.createNestedObject(String(gate));   
          jEle["cfgMovingGateSensitivity"] = radar.cfgMovingGateSensitivity(gate);
          jEle["cfgStationaryGateSensitivity"] = radar.cfgStationaryGateSensitivity(gate);
@@ -463,6 +561,21 @@ DynamicJsonDocument LD2410Client::commandProcessor(String &cmdStr) {
     
   } else if (cmdStr.equals("reboot") || iCmd == 12) {
     esp_restart();
+  } else if (cmdStr.equals("setbaudrate") || iCmd == 45) {
+    uint8_t firstSpace = cmdStr.indexOf(' ');
+    uint8_t newSpeed = (cmdStr.substring(firstSpace)).toInt();
+    JsonObject response = jCMD.createNestedObject("SetBaudRateResponse");
+    JsonObject data = response.createNestedObject("data");
+    if (radar.setSerialBaudRate(newSpeed)) {
+      Serial2.updateBaudRate(saveBaudRate(newSpeed));
+      
+      response["success"] = true; 
+      response["message"] = "Device online";
+    } else {
+      response["success"] = false; 
+      response["message"] = "command execution failed";
+    }
+
   } else {
     JsonObject response = jCMD.createNestedObject("UnknownResponse");
     JsonObject data = response.createNestedObject("data");
@@ -482,7 +595,7 @@ DynamicJsonDocument LD2410Client::commandProcessor(String &cmdStr) {
  * when the newline char is received
  */
 void LD2410Client::commandHandler() {
-  if (Serial.available()) {
+  while (Serial.available()) {
     char typedCharacter = Serial.read();
     if (typedCharacter == '\n') {
       serializeJsonPretty(commandProcessor( command ), Serial);
@@ -492,6 +605,7 @@ void LD2410Client::commandHandler() {
         command += typedCharacter;
       }
     }
+    yield();
   }
 }
 
@@ -499,7 +613,6 @@ void LD2410Client::commandHandler() {
  * Translate current status
 */
 const char * LD2410Client::triggeredby() {
-
   if(radar.isMoving() && radar.isStationary()) {
     triggered = "Stationary and Moving";
   } else if (radar.isStationary()) {
@@ -545,7 +658,7 @@ DynamicJsonDocument LD2410Client::processTargetReportingData() {
  * Engineering level Rreporting Data
 */
 DynamicJsonDocument LD2410Client::processEngineeringReportData() {
-  DynamicJsonDocument jResponse(756);
+  DynamicJsonDocument jResponse(1024);
 
   JsonObject item = jResponse.createNestedObject(LD_OCCUPANCY_ENGINEERING_JSON);
   item["unitOfMeasure"]             = "feet";
@@ -560,7 +673,7 @@ DynamicJsonDocument LD2410Client::processEngineeringReportData() {
 
   JsonObject jGates = item.createNestedObject("gates");
 
-  for (int x = 0; x < radar.cfgMaxGate(); x++) {
+  for (int x = 0; x <= radar.cfgMaxGate(); x++) {
     JsonObject gate = jGates.createNestedObject(String(x));    
     gate["movingDistanceGateEnergy"]     = radar.engMovingDistanceGateEnergy(x);
     gate["movingSensitivity"]            = radar.cfgMovingGateSensitivity(x);

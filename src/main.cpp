@@ -13,20 +13,13 @@
 #include "DHTNode.hpp"
 #include "LD2410Client.hpp"
 
-#ifdef ESP8266
-extern "C"
-{
-#include "user_interface.h" // to set CPU Freq for Non-Huzzah's
-}
-#endif
-
 /*
  * SKN_NODE_ID becomes the base name when ranges are used
  * ex: sknSensors/deviceName/DHT_0/temperature -> 72.3 degress
  * Note: HomieNode(...range,lower,upper) manages this array suffix change; i.e no more name fixups
 */
 #define SKN_MOD_NAME "MultiSensor"
-#define SKN_MOD_VERSION "3.1.3"
+#define SKN_MOD_VERSION "3.2.1"
 #define SKN_MOD_BRAND "SknSensors"
 
 #define SKN_TNODE_TITLE "Temperature and Humidity Sensor"
@@ -51,7 +44,6 @@ extern "C"
 
 HomieSetting<long> sensorsIntervalSetting("sensorInterval", "The interval in seconds to wait between sending commands.");
 HomieSetting<long> dhtType("dhtType", "Type os Humidty Sensor where; DHTesp::DHT_MODEL_t::DHT11 = 1. DHTesp::DHT_MODEL_t::DHT22 = 2");
-HomieSetting<long> broadcastInterval("broadcastInterval", "how frequently to send presence status in milliseconds.");
 HomieSetting<boolean> modeEngineering("engineeringMode", "Use engineering mode for expanded reporting data");
 
 DHTNode temperatureMonitor(PIN_DHT, DHT_TYPE, SKN_TNODE_ID, SKN_TNODE_TITLE, SKN_TNODE_TYPE, SENSOR_READ_INTERVAL);
@@ -60,7 +52,7 @@ LD2410Client  occupancyMonitor(SKN_MNODE_ID, SKN_MNODE_TITLE, SKN_MNODE_TYPE, LD
 bool bRunOnce = true;
 
 /* 
- * Settings are not read until after setup() runs
+ * Settings are not initialized until after setup() runs
  * so value would only return default values
  * this once function overcomes that short fall
 */
@@ -69,7 +61,6 @@ void readyToOperate() {
     bRunOnce = false;
     temperatureMonitor.setMeasurementInterval(sensorsIntervalSetting.get());
     temperatureMonitor.setModel((DHTesp::DHT_MODEL_t)dhtType.get());
-    occupancyMonitor.setBroadcastInterval(broadcastInterval.get());
     occupancyMonitor.setEngineeringModeTargetReporting(modeEngineering.get());
   }
 }
@@ -86,9 +77,6 @@ void setup()
   });
   dhtType.setDefaultValue(2).setValidator([](long candidate) {
     return (candidate >= 0) && (candidate <= 4);
-  });
-  broadcastInterval.setDefaultValue(5000).setValidator([](long candidate) {
-    return (candidate >= 5000) && (candidate <= 128000);
   });
   modeEngineering.setDefaultValue(false).setValidator([](boolean candidate) {
     return true; // validation only, not the value
